@@ -66,7 +66,9 @@ class EasyInfiniteDateTimeLine extends StatefulWidget {
     required this.firstDate,
     required this.focusDate,
     required this.lastDate,
+    this.scrollDirection = Axis.horizontal,
   });
+  final Axis scrollDirection;
 
   /// Represents the initial date for the timeline widget.
   /// This is the date that will be displayed as the first day in the timeline.
@@ -181,38 +183,61 @@ class _EasyInfiniteDateTimeLineState extends State<EasyInfiniteDateTimeLine> {
     final activeDayTextColor = brightness == Brightness.light
         ? EasyColors.dayAsNumColor
         : Colors.white;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (widget.showTimelineHeader)
-          EasyInfiniteHeaderWidget(
-            focusDate: widget.focusDate,
+
+    if (widget.scrollDirection == Axis.horizontal) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.showTimelineHeader)
+            EasyInfiniteHeaderWidget(
+
+              focusDate: widget.focusDate,
+              firstDate: widget.firstDate,
+              locale: widget.locale,
+              hPadding: widget.timeLineProps.hPadding,
+              headerBuilder: widget.headerBuilder,
+            ),
+          if (widget.showTimelineHeader && widget.headerBuilder == null)
+            const SizedBox(
+              height: 12.0,
+            ),
+          InfiniteTimeLineWidget(
+            scrollDirection: widget.scrollDirection,
+            controller: widget.controller,
             firstDate: widget.firstDate,
+            lastDate: widget.lastDate,
+            focusedDate: widget.focusDate,
+            inactiveDates: widget.disabledDates,
+            onDateChange: widget.onDateChange,
+            timeLineProps: widget.timeLineProps,
+            dayProps: widget.dayProps,
+            itemBuilder: widget.itemBuilder,
+            activeDayTextColor: activeDayTextColor,
+            activeDayColor: activeDayColor,
             locale: widget.locale,
-            hPadding: widget.timeLineProps.hPadding,
-            headerBuilder: widget.headerBuilder,
-          ),
-        if (widget.showTimelineHeader && widget.headerBuilder == null)
-          const SizedBox(
-            height: 12.0,
-          ),
-        InfiniteTimeLineWidget(
-          controller: widget.controller,
-          firstDate: widget.firstDate,
-          lastDate: widget.lastDate,
-          focusedDate: widget.focusDate,
-          inactiveDates: widget.disabledDates,
-          onDateChange: widget.onDateChange,
-          timeLineProps: widget.timeLineProps,
-          dayProps: widget.dayProps,
-          itemBuilder: widget.itemBuilder,
-          activeDayTextColor: activeDayTextColor,
-          activeDayColor: activeDayColor,
-          locale: widget.locale,
-          selectionMode: widget.selectionMode,
-          physics: widget.physics,
-        )
-      ],
-    );
+            selectionMode: widget.selectionMode,
+            physics: widget.physics,
+          )
+        ],
+      );
+    } else {
+      return InfiniteTimeLineWidget(
+        scrollDirection: widget.scrollDirection,
+        controller: widget.controller,
+        firstDate: widget.firstDate,
+        lastDate: widget.lastDate,
+        focusedDate: widget.focusDate,
+        inactiveDates: widget.disabledDates,
+        onDateChange: widget.onDateChange,
+        timeLineProps: widget.timeLineProps,
+        dayProps: widget.dayProps,
+        itemBuilder: widget.itemBuilder,
+        activeDayTextColor: activeDayTextColor,
+        activeDayColor: activeDayColor,
+        locale: widget.locale,
+        selectionMode: widget.selectionMode,
+        physics: widget.physics,
+      );
+    }
   }
 }
